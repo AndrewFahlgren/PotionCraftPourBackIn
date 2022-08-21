@@ -2,6 +2,8 @@
 using PotionCraft.ManagersSystem.Potion;
 using PotionCraft.ManagersSystem.SaveLoad;
 using PotionCraft.ObjectBased.AlchemyMachine;
+using PotionCraft.ObjectBased.InteractiveItem.Vacuuming;
+using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.RecipeMap;
 using PotionCraft.ObjectBased.RecipeMap.Buttons;
 using PotionCraft.ObjectBased.RecipeMap.RecipeMapItem.PathMapItem;
@@ -47,6 +49,24 @@ namespace PotionCraftPourBackIn.Scripts
         private static void RunSafe(Potion __result, PotionManager __instance)
         {
             Ex.RunSafe(() => PotionService.CopyImportantInfoToPotionInstance(__result, __instance));
+        }
+    }
+
+    [HarmonyPatch(typeof(PotionItem), "IgnoreCollision")]
+    public class AllowCauldronCollisionPatch
+    {
+        static bool Prefix(Collider2D target, bool ignore)
+        {
+            return Ex.RunSafe(() => CauldronInteractionService.AllowCauldronCollision(target, ignore));
+        }
+    }
+
+    [HarmonyPatch(typeof(WaterZone), "OnTriggerStay2D")]
+    public class AcceptPotionCollisionPatch
+    {
+        static bool Prefix(Collider2D other)
+        {
+            return Ex.RunSafe(() => CauldronInteractionService.AcceptPotionCollision(other));
         }
     }
 }

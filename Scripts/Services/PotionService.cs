@@ -3,6 +3,7 @@ using PotionCraft.ManagersSystem.Potion;
 using PotionCraft.ObjectBased.InteractiveItem.Vacuuming;
 using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.RecipeMap.RecipeMapItem.PotionEffectMapItem;
+using PotionCraft.ObjectBased.Stack;
 using PotionCraft.ScriptableObjects;
 using System;
 using System.Collections.Generic;
@@ -53,11 +54,18 @@ namespace PotionCraftPourBackIn.Scripts.Services
         /// </summary>
         public static void CopyImportantInfoToPotionInstance(Potion copyTo, Potion copyFrom)
         {
+            //TODO these are saving on the potion I think
             var recipeMarks = copyTo.potionFromPanel.recipeMarks;
             copyFrom.potionFromPanel.recipeMarks.ForEach(m => recipeMarks.Add(m.Clone()));
             copyTo.potionFromPanel.collectedPotionEffects = copyFrom.potionFromPanel.collectedPotionEffects;
+            copyTo.potionFromPanel.serializedPath = copyFrom.potionFromPanel.serializedPath;
+            copyTo.potionFromPanel.potionUsedComponents = copyFrom.potionFromPanel.potionUsedComponents;
+            copyTo.potionFromPanel.potionSkinSettings = copyFrom.potionFromPanel.potionSkinSettings;
+        }
 
-            //TODO also copy other things from the SerializedPotionFromPanel like the current path and who knows what else
+        public static bool IsPotionStackItemEffect(StackVisualEffects instance)
+        {
+            return instance?.stackScript?.inventoryItem is Potion;
         }
     }
 }

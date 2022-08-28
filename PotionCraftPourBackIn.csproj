@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>PotionCraftRecipeWaypoints</AssemblyName>
+    <AssemblyName>PotionCraftPourBackIn</AssemblyName>
     <Description>Recipe Waypoint Mod for Potion Craft</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

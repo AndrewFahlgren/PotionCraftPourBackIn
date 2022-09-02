@@ -1,6 +1,6 @@
 ﻿using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack.StackItem;
-using PotionCraftPourBackIn.Scripts.Patchers;
+using PotionCraftPourBackIn.Scripts.Services;
 using UnityEngine;
 
 namespace PotionCraftPourBackIn.Scripts.UIElements
@@ -30,8 +30,8 @@ namespace PotionCraftPourBackIn.Scripts.UIElements
 
         public override void IgnoreCollision(Collider2D target, bool ignore = true)
         {
-            if (!EquipmentInteractionPatcher.IsColliderCauldronThrowVacuumingPhysics(target)) return;
-            EquipmentInteractionPatcher.IgnoreCollisionForPotionItem(potionItem, target, ignore);
+            if (!EquipmentInteractionService.IsColliderCauldronThrowVacuumingPhysics(target)) return;
+            EquipmentInteractionService.IgnoreCollisionForPotionItem(potionItem, target, ignore);
         }
     }
 }

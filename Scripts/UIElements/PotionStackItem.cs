@@ -1,21 +1,15 @@
-﻿using PotionCraft.ObjectBased;
-using PotionCraft.ObjectBased.Potion;
-using PotionCraft.ObjectBased.Stack;
+﻿using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack.StackItem;
-using PotionCraft.Utils.SortingOrderSetter;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 
-namespace PotionCraftPourBackIn.Scripts
+namespace PotionCraftPourBackIn.Scripts.UIElements
 {
+    /// <summary>
+    /// Dummy script for marking stack items as potion stack items
+    /// </summary>
     public class PotionStackItem : StackItem
     {
         public PotionItem potionItem;
-
-        //TODO move more logic into this class
 
         public override Bounds? GetHoveringColliderBounds()
         {

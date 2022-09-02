@@ -203,5 +203,20 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
         }
 
         #endregion
+
+        #region Helper Methods
+
+        public static bool IsColliderCauldronThrowVacuumingPhysics(Collider2D target)
+        {
+            return target.GetComponentInParent<ThrowVacuuming>() == Managers.Ingredient.cauldron.throwVacuuming;
+        }
+
+        public static void IgnoreCollisionForPotionItem(PotionItem potionItem, Collider2D target, bool ignore)
+        {
+            if (!ignore && Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
+            potionItem.IgnoreCollision(target, ignore);
+        }
+
+        #endregion
     }
 }

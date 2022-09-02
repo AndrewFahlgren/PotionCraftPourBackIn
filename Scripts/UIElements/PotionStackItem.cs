@@ -1,5 +1,6 @@
 ﻿using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack.StackItem;
+using PotionCraftPourBackIn.Scripts.Patchers;
 using UnityEngine;
 
 namespace PotionCraftPourBackIn.Scripts.UIElements
@@ -25,6 +26,12 @@ namespace PotionCraftPourBackIn.Scripts.UIElements
         public override void SetThisItemLayersToNormal()
         {
             potionItem.gameObject.layer = 14;
+        }
+
+        public override void IgnoreCollision(Collider2D target, bool ignore = true)
+        {
+            if (!EquipmentInteractionPatcher.IsColliderCauldronThrowVacuumingPhysics(target)) return;
+            EquipmentInteractionPatcher.IgnoreCollisionForPotionItem(potionItem, target, ignore);
         }
     }
 }

@@ -124,7 +124,7 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
             recipeMarks.Clear();
             copyFrom.recipeMarks.ForEach(m => recipeMarks.Add(m.Clone()));
             copyTo.potionFromPanel.collectedPotionEffects.Clear();
-            foreach (var collectedPotionEffect in copyFromPotion.Effects)
+            foreach (var collectedPotionEffect in copyFromPotion?.Effects ?? Managers.Potion.collectedPotionEffects)
             {
                 if (collectedPotionEffect == null)
                     break;

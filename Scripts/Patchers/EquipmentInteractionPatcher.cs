@@ -12,6 +12,9 @@ using UnityEngine.Rendering;
 using PotionCraft;
 using HarmonyLib;
 using PotionCraftPourBackIn.Scripts.UIElements;
+using PotionCraft.ObjectBased.AlchemyMachine;
+using PotionCraft.ScriptableObjects;
+using PotionCraftPourBackIn.Scripts.Services;
 
 namespace PotionCraftPourBackIn.Scripts.Patchers
 {
@@ -103,6 +106,9 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
                 var grabbedInteractiveItem = Managers.Cursor.grabbedInteractiveItem;
                 if (grabbedInteractiveItem is not PotionItem potionItem) return;
                 if (Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
+                //Do not show highlight and allow interactions for potions which cannot be poured back in
+                if (!PotionDataPatcher.PotionHasSerializedData((Potion)potionItem.inventoryItem) 
+                    && RecipeService.GetRecipeForPotion((Potion)potionItem.inventoryItem) == null) return;
                 var controlsProvider = Managers.Input.controlsProvider;
                 newResult = instance.СanTakeIngredients
                             && (potionItem.GetRigidbody() == null
@@ -111,6 +117,28 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
                                  && !Gamepad.MustFreeModeBeEnabled());
             });
             if (newResult) result = true;
+        }
+
+        [HarmonyPatch(typeof(AlchemyMachineSlot), "CanBeInteractedNow")]
+        public class OverrideAlchemyMachineSlotCanBeInteractedPatch
+        {
+            static void Postfix(ref bool __result)
+            {
+                OverrideAlchemyMachineSlotCanBeInteracted(ref __result);
+            }
+        }
+
+        private static void OverrideAlchemyMachineSlotCanBeInteracted(ref bool result)
+        {
+            if (result == false) return;
+            var newResult = true;
+            Ex.RunSafe(() =>
+            {
+                var grabbedInteractiveItem = Managers.Cursor.grabbedInteractiveItem;
+                if (grabbedInteractiveItem is not PotionItem potionItem) return;
+                if ((potionItem.inventoryItem as Potion).Effects.Length == 0) newResult = false;
+            });
+            if (!newResult) result = false;
         }
 
         #endregion

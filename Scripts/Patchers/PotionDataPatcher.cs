@@ -3,9 +3,11 @@ using PotionCraft;
 using PotionCraft.ManagersSystem;
 using PotionCraft.ManagersSystem.Player;
 using PotionCraft.ManagersSystem.Potion;
+using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.RecipeMap.RecipeMapItem.PotionEffectMapItem;
 using PotionCraft.ObjectBased.Stack;
 using PotionCraft.ObjectBased.UIElements.PotionCraftPanel;
+using PotionCraft.SaveLoadSystem;
 using PotionCraft.ScriptableObjects;
 using PotionCraftPourBackIn.Scripts.Services;
 using PotionCraftPourBackIn.Scripts.Storage;
@@ -60,7 +62,7 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
         private static void ContinueBrewingFromPotion(Potion potion)
         {
             var matchingRecipe = RecipeService.GetRecipeForPotion(potion);
-            var potionFromPanel = potion.potionFromPanel.serializedPath.indicatorTargetPosition == Vector2.zero
+            var potionFromPanel = !PotionHasSerializedData(potion)
                                     ? matchingRecipe
                                     : potion.potionFromPanel;
             if (potionFromPanel == null)
@@ -93,6 +95,11 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
                 }
             }
 
+        }
+
+        public static bool PotionHasSerializedData(Potion potion)
+        {
+            return potion.potionFromPanel.serializedPath.indicatorTargetPosition != Vector2.zero || (potion.potionFromPanel?.serializedPath?.fixedPathPoints?.Any() ?? false);
         }
 
         [HarmonyPatch(typeof(Potion), "Clone")]
@@ -131,6 +138,23 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
                 copyTo.potionFromPanel.collectedPotionEffects.Add(collectedPotionEffect.name);
             }
             copyTo.potionFromPanel.serializedPath = copyFrom.serializedPath;
+            if (!copyTo.usedComponents?.Any() ?? false)
+            {
+                if (copyTo.usedComponents == null) copyTo.usedComponents = new List<Potion.UsedComponent>();
+                copyTo.usedComponents = Managers.Potion.usedComponents.Select(component => component.Clone()).ToList();
+            }
+            if (!copyFrom.potionUsedComponents.Any())
+            {
+                copyTo.usedComponents.ForEach((component) =>
+                {
+                    copyFrom.potionUsedComponents.Add(new SerializedUsedComponent
+                    {
+                        componentName = component.componentObject.name,
+                        componentAmount = component.amount,
+                        componentType = component.componentType.ToString()
+                    });
+                });
+            }
             copyTo.potionFromPanel.potionUsedComponents = copyFrom.potionUsedComponents;
             copyTo.potionFromPanel.potionSkinSettings = copyFrom.potionSkinSettings;
         }
@@ -203,7 +227,17 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
 
             var copyFrom = SerializedPotionFromPanel.GetPotionFromCurrentPotion();
             var copyFromPotion = Managers.Potion.potionCraftPanel.GetCurrentPotion();
+            PotionItem linkedPotionItem = null;
+            if (copyFromPotion == null)
+            {
+                if (Managers.Cursor.grabbedInteractiveItem is PotionItem potionItem)
+                {
+                    potionItem.inventoryItem = copyTo;
+                    linkedPotionItem = potionItem;
+                }
+            }
             CopyImportantInfoToPotionInstance(copyTo, copyFromPotion, copyFrom);
+            if (linkedPotionItem != null) PotionItemStackPatcher.SetupPotionItemForPouringIn(linkedPotionItem);
         }
 
 
@@ -255,7 +289,8 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
 
             var asset = PotionCraft.Settings.Settings<PlayerManagerSettings>.Asset;
             var ingredientsExperience = 0.0f;
-            potion.usedComponents.Skip(StaticStorage.PouredInUsedComponents.Count).ToList().ForEach(component =>
+            var usedComponents = potion.usedComponents.Any() ? potion.usedComponents : Managers.Potion.usedComponents;
+            usedComponents.Skip(StaticStorage.PouredInUsedComponents.Count).ToList().ForEach(component =>
             {
                 if (component.componentType != Potion.UsedComponent.ComponentType.InventoryItem) return;
                 ingredientsExperience += ((InventoryItem)component.componentObject).GetPrice() * component.amount;
@@ -282,5 +317,120 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
             return false;
         }
 
+
+        [HarmonyPatch(typeof(PotionCraftPanel), "UpdatePotionInCraftPanel")]
+        public class KeepTrackOfCurrentPotionCraftPanelPotionPatch
+        {
+            static void Postfix()
+            {
+                Ex.RunSafe(() => KeepTrackOfCurrentPotionCraftPanelPotion());
+            }
+        }
+
+        public static void KeepTrackOfCurrentPotionCraftPanelPotion()
+        {
+            StaticStorage.CurrentPotionCraftPanelPotion = Managers.Potion.potionCraftPanel.GetCurrentPotion();
+        }
+
+
+        [HarmonyPatch(typeof(Potion), "GetSerializedInventorySlot")]
+        public class SavePotionSerializedDataPatch
+        {
+            static void Postfix(SerializedInventorySlot __result, Potion __instance)
+            {
+                Ex.RunSafe(() => SavePotionSerializedData(__result, __instance));
+            }
+        }
+
+        public static void SavePotionSerializedData(SerializedInventorySlot result, Potion instance)
+        {
+            var dataToInsert = $",\"potionFromPanel\":{JsonUtility.ToJson(instance.potionFromPanel)}";
+            var insertIndex = result.data.LastIndexOf('}');
+            result.data = result.data.Insert(insertIndex, dataToInsert);
+        }
+
+        [HarmonyPatch(typeof(Potion))]
+        public class LoadPotionSerializedDataPatch
+        {
+            static MethodInfo TargetMethod()
+            {
+                return typeof(Potion).GetMethod("GetFromSerializedObject", new[] { typeof(SerializedInventorySlot) });
+            }
+
+            static void Postfix(Potion __result, SerializedInventorySlot serializedObject)
+            {
+                Ex.RunSafe(() => LoadPotionSerializedData(__result, serializedObject));
+            }
+        }
+
+        public static void LoadPotionSerializedData(Potion result, SerializedInventorySlot serializedRecipe)
+        {
+            //Check if there is an existing potionFromPanel
+            var keyIndex = serializedRecipe.data.IndexOf("potionFromPanel");
+            if (keyIndex == -1)
+            {
+                return;
+            }
+            //Determine the start of the object
+            var startPotionFromPanelIndex = serializedRecipe.data.IndexOf('{', keyIndex);
+            if (startPotionFromPanelIndex == -1)
+            {
+                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed.");
+                return;
+            }
+            //Find the closing bracket of the list
+            var endPotionFromPanelIndex = GetEndJsonIndex(serializedRecipe.data, startPotionFromPanelIndex, false);
+            if (endPotionFromPanelIndex >= serializedRecipe.data.Length)
+            {
+                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed (bad end index).");
+                return;
+            }
+
+            var savedPotionFromPanelJson = serializedRecipe.data.Substring(startPotionFromPanelIndex, endPotionFromPanelIndex - startPotionFromPanelIndex);
+            if (savedPotionFromPanelJson.Length <= 2)
+            {
+                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed (empty object).");
+                return;
+            }
+
+            result.potionFromPanel = JsonUtility.FromJson<SerializedPotionFromPanel>(savedPotionFromPanelJson);
+        }
+
+        /// <summary>
+        /// Manually parses the json to find the closing bracket for this json object.
+        /// </summary>
+        /// <param name="input">the json string to parse.</param>
+        /// <param name="startIndex">the openning bracket of this object/list.</param>
+        /// <param name="useBrackets">if true this code will look for closing brackets and if false this code will look for curly braces.</param>
+        /// <returns></returns>
+        private static int GetEndJsonIndex(string input, int startIndex, bool useBrackets)
+        {
+            var endIndex = startIndex + 1;
+            var unclosedCount = 1;
+            var openChar = useBrackets ? '[' : '{';
+            var closeChar = useBrackets ? ']' : '}';
+            while (unclosedCount > 0 && endIndex < input.Length - 1)
+            {
+                var nextOpenIndex = input.IndexOf(openChar, endIndex);
+                var nextCloseIndex = input.IndexOf(closeChar, endIndex);
+                if (nextOpenIndex == -1 && nextCloseIndex == -1)
+                {
+                    break;
+                }
+                if (nextOpenIndex == -1) nextOpenIndex = int.MaxValue;
+                if (nextCloseIndex == -1) nextCloseIndex = int.MaxValue;
+                if (nextOpenIndex < nextCloseIndex)
+                {
+                    endIndex = nextOpenIndex + 1;
+                    unclosedCount++;
+                }
+                else if (nextCloseIndex < nextOpenIndex)
+                {
+                    endIndex = nextCloseIndex + 1;
+                    unclosedCount--;
+                }
+            }
+            return endIndex;
+        }
     }
 }

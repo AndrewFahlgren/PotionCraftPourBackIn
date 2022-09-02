@@ -19,6 +19,14 @@ using HarmonyLib;
 using PotionCraft.ObjectBased.UIElements.Books.RecipeBook;
 using PotionCraftPourBackIn.Scripts.UIElements;
 using PotionCraftPourBackIn.Scripts.Services;
+using PotionCraft.ObjectBased.Mortar;
+using PotionCraft.ObjectBased.Cauldron;
+using PotionCraft.ObjectBased.Scales;
+using PotionCraft.ObjectBased.AlchemyMachine;
+using PotionCraft.ObjectBased.UIElements.FloatingText;
+using PotionCraft.NotificationSystem;
+using PotionCraftPourBackIn.Scripts.Storage;
+using PotionCraft.ManagersSystem.Room;
 
 namespace PotionCraftPourBackIn.Scripts.Patchers
 {
@@ -42,7 +50,7 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
         public static void SetupPotionItemForPouringIn(PotionItem potionItem)
         {
             var potion = potionItem.inventoryItem as Potion;
-            if (potion.potionFromPanel.serializedPath.indicatorTargetPosition == Vector2.zero
+            if (!PotionDataPatcher.PotionHasSerializedData(potion)
                 && RecipeService.GetRecipeForPotion(potion) == null)
             {
                 return;
@@ -157,6 +165,41 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
             return false;
         }
 
+        [HarmonyPatch(typeof(RoomManager), "GoTo")]
+        public class NotifyForPreModPotionOnRoomChangePatch
+        {
+            static void Postfix()
+            {
+                Ex.RunSafe(() => NotifyForPreModPotionOnRoomChange());
+            }
+        }
+
+        public static void NotifyForPreModPotionOnRoomChange()
+        {
+            if (Managers.Cursor.grabbedInteractiveItem is not PotionItem potionItem) return;
+            NotifyForPreModPotion(potionItem);
+        }
+
+        private static void NotifyForPreModPotion(PotionItem instance)
+        {
+            const float timeBetweenNotifications = 5f;
+            //Only show this notification when the potion is grabbed in the laboratory
+            if (Managers.Room.currentRoom != RoomManager.RoomIndex.Laboratory && Managers.Room.targetRoom != RoomManager.RoomIndex.Laboratory) return;
+            var potion = (Potion)instance.inventoryItem;
+            if (!PotionDataPatcher.PotionHasSerializedData(potion) 
+                && RecipeService.GetRecipeForPotion(potion) == null 
+                && potion != StaticStorage.CurrentPotionCraftPanelPotion)
+            {
+                //Don't show a notification twice for a potion in same session
+                if (StaticStorage.PotionItemsNotifiedFor.Contains(potion)) return;
+                if ((Time.unscaledTime - StaticStorage.LastNotifiedTime) < timeBetweenNotifications) return;
+                StaticStorage.LastNotifiedTime = Time.unscaledTime;
+                StaticStorage.PotionItemsNotifiedFor.Add(potion);
+                Plugin.PluginLogger.LogInfo("Grabbed potion does not have recipe data. This is likely a pre-mod potion with no corresponding recipe.");
+                Notification.ShowText("This potion is missing critical markings", "You wouldn't know where to start if you poured it back in the cauldron", Notification.TextType.EventText);
+            }
+        }
+
         #endregion
 
         #region Event Forwarding
@@ -175,6 +218,8 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
             if (instance is not PotionItem) return;
             var stack = instance.gameObject.GetComponent<Stack>();
             if (stack == null) return;
+            //Ensure we are not forwarding events when interacting with scales or alchemy machine
+            if (Managers.Cursor.hoveredInteractiveItem is ScalesCupDisplay || Managers.Cursor.hoveredInteractiveItem is AlchemyMachineSlot) return;
             typeof(Stack).GetMethod("CustomOnReleasePrimaryCondition", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(stack, null);
         }
 
@@ -186,12 +231,13 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
                 Ex.RunSafe(() => ForwardGrabPrimary(__instance));
             }
         }
+
         public static void ForwardGrabPrimary(PotionItem instance)
         {
             var stack = instance.GetComponent<Stack>();
             if (stack == null)
             {
-                Plugin.PluginLogger.LogInfo("Grabbed potion does not have recipe data. This is likely a pre-mod potion with no corresponding recipe.");
+                NotifyForPreModPotion(instance);
                 return;
             }
             stack.OnGrabPrimary();
@@ -213,6 +259,8 @@ namespace PotionCraftPourBackIn.Scripts.Patchers
             if (instance is not PotionItem potionItem) return;
             var stack = potionItem.GetComponent<Stack>();
             if (stack == null) return;
+            //Ensure we are not forwarding events when interacting with scales or alchemy machine
+            if (Managers.Cursor.hoveredInteractiveItem is ScalesCupDisplay || Managers.Cursor.hoveredInteractiveItem is AlchemyMachineSlot) return;
             stack.OnReleasePrimary();
         }
 

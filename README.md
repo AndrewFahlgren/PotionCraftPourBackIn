@@ -1,10 +1,12 @@
 # Pour Back In
 This is a Potion Craft mod that lets you put potions back in the cauldron.
 
-Finish potions at any time even when they have no effects.
+Put potions back in the cauldron to continue from where you left off:
+![image](https://github.com/AndrewFahlgren/PotionCraftPourBackIn/blob/master/Images/Pour_Back_In_Thumbnail_small_16_9.png?raw=true)
 
-Put potions back in the cauldron to continue from where you left off.
 
+Finish potions at any time even when they have no effects:
+![image](https://github.com/AndrewFahlgren/PotionCraftPourBackIn/blob/master/Images/Pour%20Back%20In_FinishUnfinishedPotions.png?raw=true)
 
 
 ## Installation

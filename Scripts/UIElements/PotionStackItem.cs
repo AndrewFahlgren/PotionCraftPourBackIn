@@ -1,4 +1,6 @@
-﻿using PotionCraft.ObjectBased.Potion;
+﻿using PotionCraft.ManagersSystem;
+using PotionCraft.ObjectBased.InteractiveItem.Vacuuming;
+using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack.StackItem;
 using PotionCraftPourBackIn.Scripts.Services;
 using UnityEngine;
@@ -30,8 +32,9 @@ namespace PotionCraftPourBackIn.Scripts.UIElements
 
         public override void IgnoreCollision(Collider2D target, bool ignore = true)
         {
-            if (!EquipmentInteractionService.IsColliderCauldronThrowVacuumingPhysics(target)) return;
-            EquipmentInteractionService.IgnoreCollisionForPotionItem(potionItem, target, ignore);
+            if (target.GetComponentInParent<ThrowVacuuming>() != Managers.Ingredient.cauldron.throwVacuuming) return;
+            if (!ignore && Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
+            potionItem.IgnoreCollision(target, ignore);
         }
     }
 }

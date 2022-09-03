@@ -17,6 +17,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
         {
             var stackItem = other.GetComponentInChildren<PotionStackItem>();
             if (stackItem == null) return true;
+            if (stackItem.IsVacuumingNow) return false;
             if (throwVacuuming == Managers.Ingredient.cauldron.throwVacuuming) return true;
             return false;
         }
@@ -26,17 +27,6 @@ namespace PotionCraftPourBackIn.Scripts.Services
             if (instance.stackItem is not PotionStackItem) return true;
             if (Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return false;
             return other.GetComponentInParent<InteractiveItem>() is not PotionCraft.ObjectBased.Mortar.Mortar;
-        }
-
-        public static bool IsColliderCauldronThrowVacuumingPhysics(Collider2D target)
-        {
-            return target.GetComponentInParent<ThrowVacuuming>() == Managers.Ingredient.cauldron.throwVacuuming;
-        }
-
-        public static void IgnoreCollisionForPotionItem(PotionItem potionItem, Collider2D target, bool ignore)
-        {
-            if (!ignore && Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
-            potionItem.IgnoreCollision(target, ignore);
         }
     }
 }

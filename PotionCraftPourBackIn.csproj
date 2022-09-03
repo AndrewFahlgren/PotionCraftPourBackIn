@@ -22,9 +22,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="DOTween">
-      <HintPath>lib\DOTween.dll</HintPath>
-    </Reference>
     <Reference Include="PotionCraft.Core">
       <HintPath>lib\PotionCraft.Core.dll</HintPath>
     </Reference>
@@ -39,9 +36,6 @@
     </Reference>
     <Reference Include="PotionCraft.SoundSystem">
       <HintPath>lib\PotionCraft.SoundSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="ThirdParty.DOTween">
-      <HintPath>lib\ThirdParty.DOTween.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>lib\Unity.TextMeshPro.dll</HintPath>

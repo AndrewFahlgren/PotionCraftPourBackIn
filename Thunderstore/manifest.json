@@ -1,6 +1,6 @@
 ﻿{
   "name": "Pour_Back_In",
-  "version_number": "0.5.0",
+  "version_number": "0.5.1",
   "website_url": "https://github.com/AndrewFahlgren/PotionCraftPourBackIn",
   "description": "A mod that lets you put potions back in the cauldron! Only compatible with Potion Craft beta v0.5.0.",
   "dependencies": [

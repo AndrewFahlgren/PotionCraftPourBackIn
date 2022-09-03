@@ -8,6 +8,9 @@ Put potions back in the cauldron to continue from where you left off:
 Finish potions at any time even when they have no effects:
 ![image](https://github.com/AndrewFahlgren/PotionCraftPourBackIn/blob/master/Images/Pour%20Back%20In_FinishUnfinishedPotions.png?raw=true)
 
+## Showcase Video
+
+See this [showcase video](https://youtu.be/C7pAjMLKmu0) to see everything this mod does
 
 ## Installation
 

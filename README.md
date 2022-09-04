@@ -14,7 +14,7 @@ See this [showcase video](https://youtu.be/C7pAjMLKmu0) to see everything this m
 
 ## Installation
 
-### Automatic installation with [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) or [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/)
+### Automatic installation with [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/)
 
 Go to [Pour Back In on Thunderstore](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Pour_Back_In/) and press "Install with Mod Manager".
 

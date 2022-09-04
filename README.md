@@ -27,7 +27,7 @@ If you are not sure where your Potion Craft steam directory is you can find out 
 
 r2modman makes it easy to install Pour Back In although you will need to launch Potion Craft from the mod manager each time you play.
 
-Go to [Pour Back In on Thunderstore](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Pour_Back_In/) and press "Install with Mod Manager".
+- Go to [Pour Back In on Thunderstore](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Pour_Back_In/) and press "Install with Mod Manager".
   
 ### Steam Deck Installation
 See [this guide](https://docs.google.com/document/d/1Y3PDeMaffkh7x4U3j46YZ9K6AhM2EvRF9v3mAGBFzW4) for installing Potion Craft mods on the Steam Deck

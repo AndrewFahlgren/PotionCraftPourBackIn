@@ -16,7 +16,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         {
             if (instance is not PotionStackItem) return true;
             instance.stackScript?.RemoveItemFromStack(instance);
-            instance.soundController?.OnDestroy();
+            instance.soundController?.ResetController();
             return false;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using PotionCraft.SaveLoadSystem;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using UnityEngine;
 
 namespace PotionCraftPourBackIn.Scripts.Patches

@@ -1,6 +1,6 @@
 ﻿using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.Stack;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -43,7 +43,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
             copyTo.potionFromPanel.serializedPath = copyFrom.serializedPath;
             if (!copyTo.usedComponents?.Any() ?? false)
             {
-                if (copyTo.usedComponents == null) copyTo.usedComponents = new List<Potion.UsedComponent>();
+                if (copyTo.usedComponents == null) copyTo.usedComponents = new List<PotionUsedComponent>();
                 copyTo.usedComponents = Managers.Potion.usedComponents.Select(component => component.Clone()).ToList();
             }
             if (!copyFrom.potionUsedComponents.Any())

@@ -1,6 +1,6 @@
 ﻿using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.Stack.StackItem;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraft.ScriptableObjects.Ingredient;
 using PotionCraft.SoundSystem;
 using System;

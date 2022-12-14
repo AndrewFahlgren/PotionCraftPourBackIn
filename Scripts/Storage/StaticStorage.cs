@@ -1,4 +1,5 @@
 ﻿using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
 
 namespace PotionCraftPourBackIn.Scripts.Storage
@@ -7,7 +8,7 @@ namespace PotionCraftPourBackIn.Scripts.Storage
     {
         public static bool CurrentlyMakingPotion;
         public static bool CurrentlyGeneratingRecipe;
-        public static List<Potion.UsedComponent> PouredInUsedComponents;
+        public static List<PotionUsedComponent> PouredInUsedComponents;
         public static List<PotionEffect> PouredInEffects;
 
         public static List<Potion> PotionItemsNotifiedFor = new();

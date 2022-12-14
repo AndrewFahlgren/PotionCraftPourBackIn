@@ -2,6 +2,7 @@
 using PotionCraft.ManagersSystem;
 using PotionCraft.ManagersSystem.Player;
 using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             var usedComponents = potion.usedComponents.Any() ? potion.usedComponents : Managers.Potion.usedComponents;
             usedComponents.Skip(StaticStorage.PouredInUsedComponents.Count).ToList().ForEach(component =>
             {
-                if (component.componentType != Potion.UsedComponent.ComponentType.InventoryItem) return;
+                if (component.componentType != PotionUsedComponent.ComponentType.InventoryItem) return;
                 ingredientsExperience += ((InventoryItem)component.componentObject).GetPrice() * component.amount;
             });
             ingredientsExperience *= asset.experiencePotionIngredientsMultiplier;

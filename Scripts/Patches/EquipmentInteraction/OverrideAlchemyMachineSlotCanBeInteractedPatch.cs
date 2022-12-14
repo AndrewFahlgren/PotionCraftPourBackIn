@@ -2,7 +2,7 @@
 using PotionCraft.ObjectBased.Potion;
 using HarmonyLib;
 using PotionCraft.ObjectBased.AlchemyMachine;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {

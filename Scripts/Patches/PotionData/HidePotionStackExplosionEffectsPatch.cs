@@ -5,6 +5,7 @@ using PotionCraft.ScriptableObjects;
 using System.Reflection;
 using UnityEngine;
 using PotionCraftPourBackIn.Scripts.Services;
+using IngredientVisualEffectSystem;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
@@ -13,7 +14,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
     {
         static MethodInfo TargetMethod()
         {
-            return typeof(StackVisualEffects).GetMethod("SpawnEffectsExplosion", new[] { typeof(VisualEffectScriptableObject), typeof(Vector3), typeof(SpriteSortingLayers) });
+            return typeof(StackVisualEffects).GetMethod("SpawnEffectsExplosion", new[] { typeof(IngredientVisualEffect), typeof(Vector3), typeof(SpriteSortingLayers) });
         }
 
         static bool Prefix(StackVisualEffects __instance)

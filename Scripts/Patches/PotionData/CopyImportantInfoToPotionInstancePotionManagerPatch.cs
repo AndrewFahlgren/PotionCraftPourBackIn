@@ -2,7 +2,7 @@
 using PotionCraft.ManagersSystem;
 using PotionCraft.ManagersSystem.Potion;
 using PotionCraft.ObjectBased.Potion;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
 using static PotionCraft.SaveLoadSystem.ProgressState;
 using PotionCraftPourBackIn.Scripts.Services;

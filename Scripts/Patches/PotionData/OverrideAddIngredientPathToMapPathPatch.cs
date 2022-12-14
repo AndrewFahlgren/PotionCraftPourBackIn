@@ -3,6 +3,7 @@ using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.RecipeMap.RecipeMapItem.PotionEffectMapItem;
 using PotionCraft.ObjectBased.Stack;
 using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Services;
 using PotionCraftPourBackIn.Scripts.Storage;
 using PotionCraftPourBackIn.Scripts.UIElements;
@@ -34,7 +35,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
 
         private static bool OverrideAddIngredientPathToMapPath(Stack instance)
         {
-            var potionStackItem = instance.itemsFromThisStack.FirstOrDefault() as PotionStackItem;
+            var potionStackItem = instance.itemsFromThisStack.FirstOrDefault() as PotionStackItem ?? instance.vacuumedItemsFromThisStack.FirstOrDefault() as PotionStackItem;
             if (potionStackItem == null) return true;
             var potion = (Potion)potionStackItem.potionItem.inventoryItem;
             ContinueBrewingFromPotion(potion);
@@ -69,7 +70,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
 
                 foreach (var potionEffectsOn in Managers.RecipeMap.currentMap.potionEffectsOnMap)
                 {
-                    if (potionEffectsOn.effect == collectedPotionEffect)
+                    if (potionEffectsOn.Effect == collectedPotionEffect)
                     {
                         potionEffectsOn.Status = PotionEffectStatus.Collected;
                         break;

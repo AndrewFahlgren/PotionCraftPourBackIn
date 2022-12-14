@@ -5,7 +5,7 @@ using PotionCraft.ObjectBased.InteractiveItem.SoundControllers.Presets;
 using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack;
 using PotionCraft.ObjectBased.Stack.StackItem;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraft.ScriptableObjects.Ingredient;
 using PotionCraft.SoundSystem;
 using System;
@@ -18,6 +18,7 @@ using PotionCraftPourBackIn.Scripts.UIElements;
 using PotionCraft.NotificationSystem;
 using PotionCraftPourBackIn.Scripts.Storage;
 using PotionCraft.ManagersSystem.Room;
+using PotionCraft.ObjectBased.InteractiveItem;
 
 namespace PotionCraftPourBackIn.Scripts.Services
 {
@@ -37,7 +38,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
             }
             var visualEffect = potionItem.gameObject.AddComponent<StackVisualEffects>();
             var stackScript = potionItem.gameObject.AddComponent<Stack>();
-            typeof(Stack).GetField("thisRigidbody", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackScript, potionItem.GetRigidbody());
+            typeof(MovableItem).GetField("thisRigidbody", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackScript, potionItem.GetRigidbody());
             var stackItem = potionItem.gameObject.AddComponent<PotionStackItem>();
             stackItem.potionItem = potionItem;
             typeof(StackItem).GetField("thisRigidbody", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackItem, potionItem.GetRigidbody());
@@ -45,7 +46,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
             stackScript.itemsFromThisStack = new List<StackItem> { stackItem };
             var potionSoundController = (PotionCraft.ObjectBased.Stack.SoundController)FormatterServices.GetUninitializedObject(typeof(PotionCraft.ObjectBased.Stack.SoundController));
             InitPotionStackSoundController(potionSoundController, stackScript, ((Potion)potionItem.inventoryItem).soundPreset);
-            typeof(ItemFromInventory).GetProperty("SoundController", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackScript, potionSoundController);
+            typeof(ItemFromInventory).GetField("_soundController", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackScript, potionSoundController);
             stackItem.Initialize(stackScript);
             visualEffect.stackScript = stackScript;
             stackScript.inventoryItem = potionItem.inventoryItem;

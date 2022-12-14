@@ -1,5 +1,5 @@
 ﻿using PotionCraft.ManagersSystem;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
 using System.Linq;
 using static PotionCraft.SaveLoadSystem.ProgressState;

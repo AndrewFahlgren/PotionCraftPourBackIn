@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Services;
 
 namespace PotionCraftPourBackIn.Scripts.Patches

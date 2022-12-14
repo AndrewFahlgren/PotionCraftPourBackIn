@@ -2,6 +2,7 @@
 using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.UIElements.PotionCraftPanel;
 using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
 using System.Linq;
 

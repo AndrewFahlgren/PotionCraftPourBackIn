@@ -4,9 +4,8 @@ using PotionCraft.ObjectBased.Cauldron;
 using PotionCraft.ObjectBased.InteractiveItem;
 using PotionCraft.ObjectBased.Potion;
 using HarmonyLib;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Services;
-using PotionCraft.ObjectBased.Stack;
 using UnityEngine;
 
 namespace PotionCraftPourBackIn.Scripts.Patches

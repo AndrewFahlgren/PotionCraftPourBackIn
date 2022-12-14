@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using PotionCraft.SaveLoadSystem;
-using PotionCraft.ScriptableObjects;
+using PotionCraft.ScriptableObjects.Potion;
 using System.Reflection;
 using UnityEngine;
 using static PotionCraft.SaveLoadSystem.ProgressState;

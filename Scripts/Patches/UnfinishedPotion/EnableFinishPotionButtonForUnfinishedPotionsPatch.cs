@@ -21,8 +21,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             private static void EnableFinishPotionButtonForUnfinishedPotions(PotionCraftPanel instance)
             {
                 if (!instance.IsPotionBrewingStarted()) return;
-                var limitedInventoryPanelButtons = typeof(ItemsPanel).GetField("buttons", BindingFlags.NonPublic | BindingFlags.Instance)
-                                                                     .GetValue(instance.limitedInventoryPanel) as List<InventoryObject>;
+                var limitedInventoryPanelButtons = instance.limitedInventoryPanel.buttons;
                 limitedInventoryPanelButtons.First().Locked = false;
                 instance.potionFinishingButton.Locked = false;
             }

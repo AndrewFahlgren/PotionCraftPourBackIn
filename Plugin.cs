@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace PotionCraftPourBackIn
 {
-    [BepInPlugin(PLUGIN_GUID, "PotionCraftPourBackIn", "0.5.0")]
+    [BepInPlugin(PLUGIN_GUID, "PotionCraftPourBackIn", "1.0.2.1")]
     [BepInProcess("Potion Craft.exe")]
     public class Plugin : BaseUnityPlugin
     {

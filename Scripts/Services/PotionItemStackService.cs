@@ -61,8 +61,12 @@ namespace PotionCraftPourBackIn.Scripts.Services
             var firstInvIngredient = Managers.Player.inventory.items.Keys.ToList().OfType<Ingredient>().FirstOrDefault();
             if (firstInvIngredient == null)
             {
-                Plugin.PluginLogger.LogError("Failed to setup sound controller for potion because there were no ingredients in the player inventory.");
-                return;
+                firstInvIngredient = Ingredient.allIngredients.FirstOrDefault();
+                if (firstInvIngredient?.soundPreset == null)
+                {
+                    Plugin.PluginLogger.LogError("Failed to setup sound controller for potion because there were no ingredients in the player inventory.");
+                    return;
+                }
             }
             //Get the sound preset from the first ingredient we can find so we can use it as a starting point for our PotionStackItem sound controller
             var newPreset = UnityEngine.Object.Instantiate(firstInvIngredient.soundPreset);

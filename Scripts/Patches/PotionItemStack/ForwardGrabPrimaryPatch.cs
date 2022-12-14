@@ -2,6 +2,8 @@
 using PotionCraft.ObjectBased.Stack;
 using HarmonyLib;
 using PotionCraftPourBackIn.Scripts.Services;
+using PotionCraft.Assemblies.GamepadNavigation.Conditions;
+using System.Reflection;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
@@ -22,6 +24,12 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                 return;
             }
             stack.OnGrabPrimary();
+            var setConditionValue = typeof(ConditionValue).GetMethod("SetConditionValue", BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(Condition), typeof(bool) }, new ParameterModifier[0]);
+            if (setConditionValue == null)
+            {
+                return;
+            }
+            setConditionValue.Invoke(null, new object[] { Condition.PotionInHand, true });
         }
     }
 }

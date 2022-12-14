@@ -7,16 +7,36 @@ using HarmonyLib;
 using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Services;
 using UnityEngine;
+using PotionCraft.Assemblies.GamepadNavigation;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
-    [HarmonyPatch(typeof(Cauldron), "CanBeInteractedNow")]
     public class OverrideCauldronCanBeInteractedPatch
     {
-        static void Postfix(ref bool __result, Cauldron __instance)
+        [HarmonyPatch(typeof(Cauldron), "CanBeInteractedNow")]
+        public class Cauldron_CanBeInteractedNow
         {
-            OverrideCauldronCanBeInteracted(ref __result, __instance);
+            static void Postfix(ref bool __result, Cauldron __instance)
+            {
+                OverrideCauldronCanBeInteracted(ref __result, __instance);
+            }
         }
+
+        [HarmonyPatch(typeof(SlotSelector), "SelectNextSlotByStick")]
+        public class SlotSelector_SelectNextSlotByStick
+        {
+            static bool Prefix()
+            {
+                SetIsSelectingSlotByStick(true);
+                return true;
+            }
+            static void Postfix()
+            {
+                SetIsSelectingSlotByStick(false);
+            }
+        }
+
+
         private static void OverrideCauldronCanBeInteracted(ref bool result, Cauldron instance)
         {
             if (result == true) return;
@@ -31,7 +51,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                 if (!PotionDataService.PotionHasSerializedData((Potion)potionItem.inventoryItem)
                     && RecipeService.GetRecipeForPotion((Potion)potionItem.inventoryItem) == null) return;
                 //We need to dissallow vacuuming outside of certain bounds to prevent animation issues.
-                if (!IsPotionItemWithinCauldronBounds(instance, potionItem)) return;
+                if (!IsSelectingSlotByStick && !IsPotionItemWithinCauldronBounds(instance, potionItem)) return;
                 //Now rerun some of the logic within Cauldron to determine if we should allow interaction
                 var controlsProvider = Managers.Input.controlsProvider;
                 newResult = instance.СanTakeIngredients
@@ -63,6 +83,13 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                 if (potionItem.transform.position.x <= waterbounds.min.x + xReduction || potionItem.transform.position.x >= waterbounds.max.x - xReduction) return false;
             }
             return true;
+        }
+
+        private static bool IsSelectingSlotByStick;
+        //We need to relax interaction rules when using a controller so that the cauldron slot can be selected even when the potion is far away from the cauldron
+        private static void SetIsSelectingSlotByStick(bool isSelectingSlotByStick)
+        {
+            IsSelectingSlotByStick = isSelectingSlotByStick;
         }
     }
 }

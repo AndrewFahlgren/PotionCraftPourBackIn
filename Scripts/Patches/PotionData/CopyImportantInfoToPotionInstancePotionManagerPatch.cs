@@ -34,7 +34,13 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                 }
             }
             PotionDataService.CopyImportantInfoToPotionInstance(copyTo, copyFromPotion, copyFrom);
-            if (linkedPotionItem != null) PotionItemStackService.SetupPotionItemForPouringIn(linkedPotionItem);
+            if (linkedPotionItem != null)
+            {
+                PotionItemStackService.SetupPotionItemForPouringIn(linkedPotionItem);
+                //When grabbing from the potion craft panel we have to setup the potion stack item after grab has already happened
+                //Call this again so we can forward the even to the stack/stackitem
+                linkedPotionItem.OnGrabPrimary();
+            }
         }
     }
 }

@@ -41,3 +41,5 @@ I am making a series of mods which make recipes easier to use. All of these mods
 [Bookmark Organizer](https://github.com/AndrewFahlgren/PotionCraftBookmarkOrganizer) - Lets you organize your recipes into groups! Save space in your recipe book and find the recipe you are looking for faster!
 
 [Recipe Waypoints](https://github.com/AndrewFahlgren/PotionCraftRecipeWaypoints) - Allows you to see where your waypoint recipes (those with no effects or are far away from their last effect) are on the map so you know where you are going when you continue brewing from that recipe.
+
+[Brew From Here](https://github.com/AndrewFahlgren/PotionCraftUsefulRecipeMarks) - Lets you continue brewing from any recipe mark.

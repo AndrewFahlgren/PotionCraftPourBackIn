@@ -22,7 +22,8 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             {
                 var grabbedInteractiveItem = Managers.Cursor.grabbedInteractiveItem;
                 if (grabbedInteractiveItem is not PotionItem potionItem) return;
-                if ((potionItem.inventoryItem as Potion).Effects.Length == 0) newResult = false;
+                var potion = (potionItem.inventoryItem as Potion);
+                if (potion.Effects.Length == 0 || potion.Effects[0] == null) newResult = false;
             });
             if (!newResult) result = false;
         }

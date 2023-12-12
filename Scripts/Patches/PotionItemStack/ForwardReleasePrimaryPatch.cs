@@ -3,7 +3,7 @@ using PotionCraft.ObjectBased;
 using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack;
 using HarmonyLib;
-using PotionCraft.ObjectBased.Scales;
+using PotionCraft.ObjectBased.ScalesSystem;
 using PotionCraft.ObjectBased.AlchemyMachine;
 
 namespace PotionCraftPourBackIn.Scripts.Patches

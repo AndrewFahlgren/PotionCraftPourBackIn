@@ -4,8 +4,8 @@ using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.Stack;
 using System.Reflection;
 using HarmonyLib;
-using PotionCraft.ObjectBased.Scales;
 using PotionCraft.ObjectBased.AlchemyMachine;
+using PotionCraft.ObjectBased.ScalesSystem;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {

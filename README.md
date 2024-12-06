@@ -1,4 +1,5 @@
 # Pour Back In
+**This mod is not compatible with Potion Craft v2.0!! This mod is only compatible with Potion Craft v1.1 currently and is currently being updated to work with the newest version!**
 This is a Potion Craft mod that lets you put potions back in the cauldron.
 
 Put potions back in the cauldron to continue from where you left off:

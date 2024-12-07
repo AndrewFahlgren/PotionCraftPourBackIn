@@ -1,5 +1,5 @@
 # Pour Back In
-This is a Potion Craft mod that lets you put potions back in the cauldron! Compatible with Potion Craft v1.1!
+This is a Potion Craft mod that lets you put potions back in the cauldron! Compatible with Potion Craft v2.0!
 
 Put potions back in the cauldron to continue from where you left off:
 
@@ -42,8 +42,8 @@ See [this guide](https://docs.google.com/document/d/1Y3PDeMaffkh7x4U3j46YZ9K6AhM
 ## Other Mods
 I am making a series of mods which make recipes easier to use. All of these mods are intended to be balanced and feel like part of the base game:
 
-[Alchemy Machine Recipes](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Alchemy_Machine_Recipes/) - Enables the save recipe button when making things with the alchemy machine. Make legendary stones and salts with the click of a button!
-
 [Bookmark Organizer](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Bookmark_Organizer/) - Lets you organize your recipes into groups! Save space in your recipe book and find the recipe you are looking for faster!
 
 [Recipe Waypoints](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Recipe_Waypoints/) - Allows you to see where your waypoint recipes (those with no effects or are far away from their last effect) are on the map so you know where you are going when you continue brewing from that recipe.
+
+[Brew From Here](https://potion-craft.thunderstore.io/package/AndrewFahlgren/Brew_From_Here/) - Lets you continue brewing from any recipe mark.

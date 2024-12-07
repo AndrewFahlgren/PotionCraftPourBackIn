@@ -2,10 +2,10 @@
   "$schema": "https://github.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/blob/master/Schema.json",
   "author": "com.fahlgorithm.potioncraftpourbackin",
   "description": "A mod to allow you to pour potions back in the cauldron to continue brewing them.",
-  "gameVersion": "1.1.0.0",
+  "gameVersion": "2.0.0.0",
   "id": "PotionCraftPourBackIn",
   "name": "PotionCraftPourBackIn",
-  "version": "1.1.0.0",
+  "version": "2.0.0.0",
   "dependsOn": {}
 
 }

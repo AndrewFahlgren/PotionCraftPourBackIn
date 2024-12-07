@@ -1,5 +1,7 @@
 # Pour Back In
-**This mod is not compatible with Potion Craft v2.0!! This mod is only compatible with Potion Craft v1.1 currently and is currently being updated to work with the newest version!**
+
+This mod is now compatible with Potion Craft v2.0!
+
 This is a Potion Craft mod that lets you put potions back in the cauldron.
 
 Put potions back in the cauldron to continue from where you left off:
@@ -36,8 +38,6 @@ See [this guide](https://docs.google.com/document/d/1Y3PDeMaffkh7x4U3j46YZ9K6AhM
 ## Other Mods
 
 I am making a series of mods which make recipes easier to use. All of these mods are intended to be balanced and feel like part of the base game:
-
-[Alchemy Machine Recipes](https://github.com/AndrewFahlgren/PotionCraftAlchemyMachineRecipes) - Enables the save recipe button when making things with the alchemy machine. Make legendary stones and salts with the click of a button!
 
 [Bookmark Organizer](https://github.com/AndrewFahlgren/PotionCraftBookmarkOrganizer) - Lets you organize your recipes into groups! Save space in your recipe book and find the recipe you are looking for faster!
 

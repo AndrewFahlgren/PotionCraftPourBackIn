@@ -3,6 +3,7 @@ using PotionCraft.ObjectBased.Potion;
 using HarmonyLib;
 using PotionCraft.ObjectBased.AlchemyMachine;
 using PotionCraft.ScriptableObjects.Potion;
+using PotionCraft.ScriptableObjects;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
@@ -22,7 +23,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             {
                 var grabbedInteractiveItem = Managers.Cursor.grabbedInteractiveItem;
                 if (grabbedInteractiveItem is not PotionItem potionItem) return;
-                var potion = (potionItem.inventoryItem as Potion);
+                var potion = Traverse.Create(potionItem).Property<InventoryItem>("InventoryItem").Value as Potion;
                 if (potion.Effects.Length == 0 || potion.Effects[0] == null) newResult = false;
             });
             if (!newResult) result = false;

@@ -6,13 +6,14 @@ using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
 using static PotionCraft.SaveLoadSystem.ProgressState;
 using PotionCraftPourBackIn.Scripts.Services;
+using PotionCraft.ScriptableObjects;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
     [HarmonyPatch(typeof(PotionManager), "GeneratePotionFromCurrentPotion")]
     public class CopyImportantInfoToPotionInstancePotionManagerPatch
     {
-        [HarmonyAfter(new string[] { "com.fahlgorithm.potioncraftalchemymachinerecipies" })]
+        [HarmonyAfter(["com.fahlgorithm.potioncraftalchemymachinerecipies"])]
         static void Postfix(Potion __result)
         {
             Ex.RunSafe(() => CopyImportantInfoToPotionInstance(__result));
@@ -22,14 +23,14 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         {
             if (!StaticStorage.CurrentlyMakingPotion || StaticStorage.CurrentlyGeneratingRecipe) return;
 
-            var copyFrom = SerializedPotionFromPanel.GetPotionFromCurrentPotion();
-            var copyFromPotion = Managers.Potion.potionCraftPanel.GetCurrentPotion();
+            var copyFrom = Managers.Potion.GetSerializedPotionRecipeDataFromCurrentPotion();
+            var copyFromPotion = Managers.Potion.potionCraftPanel.GetRecipeBookPageContent() as Potion;
             PotionItem linkedPotionItem = null;
             if (copyFromPotion == null)
             {
                 if (Managers.Cursor.grabbedInteractiveItem is PotionItem potionItem)
                 {
-                    potionItem.inventoryItem = copyTo;
+                    Traverse.Create(potionItem).Property("InventoryItem").SetValue(copyTo);
                     linkedPotionItem = potionItem;
                 }
             }

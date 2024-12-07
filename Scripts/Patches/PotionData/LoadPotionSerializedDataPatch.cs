@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PotionCraft.InventorySystem;
 using PotionCraft.SaveLoadSystem;
 using PotionCraft.ScriptableObjects.Potion;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         private static void LoadPotionSerializedData(Potion result, SerializedInventorySlot serializedRecipe)
         {
             //Check if there is an existing potionFromPanel
-            var keyIndex = serializedRecipe.data.IndexOf("potionFromPanel");
+            var keyIndex = serializedRecipe.data.IndexOf("recipeData");
             if (keyIndex == -1)
             {
                 return;
@@ -32,25 +33,25 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             var startPotionFromPanelIndex = serializedRecipe.data.IndexOf('{', keyIndex);
             if (startPotionFromPanelIndex == -1)
             {
-                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed.");
+                Plugin.PluginLogger.LogInfo("Error: recipeData data in serialized potion is malformed.");
                 return;
             }
             //Find the closing bracket of the list
             var endPotionFromPanelIndex = GetEndJsonIndex(serializedRecipe.data, startPotionFromPanelIndex, false);
             if (endPotionFromPanelIndex >= serializedRecipe.data.Length)
             {
-                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed (bad end index).");
+                Plugin.PluginLogger.LogInfo("Error: recipeData data in serialized potion is malformed (bad end index).");
                 return;
             }
 
             var savedPotionFromPanelJson = serializedRecipe.data.Substring(startPotionFromPanelIndex, endPotionFromPanelIndex - startPotionFromPanelIndex);
             if (savedPotionFromPanelJson.Length <= 2)
             {
-                Plugin.PluginLogger.LogInfo("Error: potionFromPanel data in serialized potion is malformed (empty object).");
+                Plugin.PluginLogger.LogInfo("Error: recipeData data in serialized potion is malformed (empty object).");
                 return;
             }
 
-            result.potionFromPanel = JsonUtility.FromJson<SerializedPotionFromPanel>(savedPotionFromPanelJson);
+            result.SetSerializedPotionFromPanel(JsonUtility.FromJson<SerializedPotionRecipeData>(savedPotionFromPanelJson));
         }
 
         /// <summary>

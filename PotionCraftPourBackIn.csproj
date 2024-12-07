@@ -25,6 +25,12 @@
     <Reference Include="DOTween">
       <HintPath>lib\DOTween.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PotionCraft.ConverterFrom110To200">
+      <HintPath>lib\PotionCraft.ConverterFrom110To200.dll</HintPath>
+    </Reference>
     <Reference Include="PotionCraft.Core">
       <HintPath>lib\PotionCraft.Core.dll</HintPath>
     </Reference>

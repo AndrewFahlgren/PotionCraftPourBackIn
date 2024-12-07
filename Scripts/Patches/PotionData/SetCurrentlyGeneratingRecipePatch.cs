@@ -4,7 +4,7 @@ using PotionCraftPourBackIn.Scripts.Storage;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
-    [HarmonyPatch(typeof(SaveRecipeButton), "GenerateRecipe")]
+    [HarmonyPatch(typeof(SavePotionRecipeButton), "GenerateRecipe")]
     public class SetCurrentlyGeneratingRecipePatch
     {
         static bool Prefix()

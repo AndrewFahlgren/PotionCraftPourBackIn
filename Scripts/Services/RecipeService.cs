@@ -1,4 +1,5 @@
 ﻿using PotionCraft.ManagersSystem;
+using PotionCraft.ObjectBased.UIElements.Books.RecipeBook;
 using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,12 @@ namespace PotionCraftPourBackIn.Scripts.Services
     /// </summary>
     public static class RecipeService
     {
-        public static SerializedPotionFromPanel GetRecipeForPotion(Potion potion)
+        public static ISerializedRecipeData GetRecipeForPotion(Potion potion)
         {
-            return Managers.Potion.recipeBook.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe))?.potionFromPanel;
+            return RecipeBook.Instance.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe))?.GetSerializedRecipeData();
         }
 
-        private static bool RecipeMatchesPotion(Potion potion, Potion recipe)
+        private static bool RecipeMatchesPotion(Potion potion, IRecipeBookPageContent recipe)
         {
             if (recipe == null) return false;
             if (!recipe.GetLocalizedTitle().Equals(potion.GetLocalizedTitle())) return false;

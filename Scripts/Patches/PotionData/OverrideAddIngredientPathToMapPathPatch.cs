@@ -57,7 +57,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                                 ? Managers.RecipeMap.currentMap.potionBase
                                 : PotionBase.GetByName(potionFromPanel.potionUsedComponents[0].componentName);
             potionFromPanel.ApplyPotionToCurrentPotion(potionBase);
-            StaticStorage.PouredInUsedComponents = potion.usedComponents.ToList();
+            StaticStorage.PouredInUsedComponents = potion.usedComponents.GetSummaryComponents().ToList();
             StaticStorage.PouredInEffects = potion.Effects.ToList();
             if (matchingRecipe != null)
             {

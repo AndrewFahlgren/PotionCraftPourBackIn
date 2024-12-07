@@ -8,6 +8,7 @@ using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Services;
 using UnityEngine;
 using PotionCraft.Assemblies.GamepadNavigation;
+using PotionCraft.ScriptableObjects;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
@@ -48,8 +49,9 @@ namespace PotionCraftPourBackIn.Scripts.Patches
                 //Do not allow potion interactions if we are already brewing
                 if (Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
                 //Do not show highlight and allow interactions for potions which cannot be poured back in
-                if (!PotionDataService.PotionHasSerializedData((Potion)potionItem.inventoryItem)
-                    && RecipeService.GetRecipeForPotion((Potion)potionItem.inventoryItem) == null) return;
+                var inventoryItem = (Potion)Traverse.Create(potionItem).Property<InventoryItem>("InventoryItem").Value;
+                if (!PotionDataService.PotionHasSerializedData(inventoryItem)
+                    && RecipeService.GetRecipeForPotion(inventoryItem) == null) return;
                 //We need to dissallow vacuuming outside of certain bounds to prevent animation issues.
                 if (!IsSelectingSlotByStick && !IsPotionItemWithinCauldronBounds(instance, potionItem)) return;
                 //Now rerun some of the logic within Cauldron to determine if we should allow interaction

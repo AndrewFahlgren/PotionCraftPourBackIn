@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using PotionCraft.ManagersSystem;
 using PotionCraft.ManagersSystem.Player;
+using PotionCraft.ManagersSystem.Potion.Entities;
 using PotionCraft.ScriptableObjects;
 using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
@@ -16,7 +17,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
     {
         static MethodInfo TargetMethod()
         {
-            return typeof(ExperienceSubManager).GetMethod("AddExperience", new[] { typeof(Potion), typeof(int) });
+            return typeof(ExperienceSubManager).GetMethod("AddExperience", [typeof(Potion), typeof(int)]);
         }
 
         static bool Prefix(Potion potion, int count)
@@ -30,11 +31,11 @@ namespace PotionCraftPourBackIn.Scripts.Patches
 
             var asset = PotionCraft.Settings.Settings<PlayerManagerSettings>.Asset;
             var ingredientsExperience = 0.0f;
-            var usedComponents = potion.usedComponents.Any() ? potion.usedComponents : Managers.Potion.usedComponents;
-            usedComponents.Skip(StaticStorage.PouredInUsedComponents.Count).ToList().ForEach(component =>
+            var usedComponents = potion.usedComponents.GetSummaryComponents().Any() ? potion.usedComponents : Managers.Potion.PotionUsedComponents;
+            usedComponents.GetSummaryComponents().Skip(StaticStorage.PouredInUsedComponents.Count).ToList().ForEach(component =>
             {
-                if (component.componentType != PotionUsedComponent.ComponentType.InventoryItem) return;
-                ingredientsExperience += ((InventoryItem)component.componentObject).GetPrice() * component.amount;
+                if (component.Type != AlchemySubstanceComponentType.InventoryItem) return;
+                ingredientsExperience += ((InventoryItem)component.Component).GetPrice() * component.Amount;
             });
             ingredientsExperience *= asset.experiencePotionIngredientsMultiplier;
             var desiredEffects = new List<PotionEffect>();
@@ -49,7 +50,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             }
             var newEffects = potion.Effects.Skip(newEffectsIndex).ToList();
             var num = newEffects.Any()
-                        ? potion.GetPotionReview(newEffects.ToArray()).cost * asset.experiencePotionEffectsMultiplier
+                        ? Potion.GetPotionReview([], [.. newEffects]).cost * asset.experiencePotionEffectsMultiplier
                         : 0f;
             Managers.Player.AddExperience((ingredientsExperience + num) * count);
 

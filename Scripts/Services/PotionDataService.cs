@@ -1,5 +1,8 @@
-﻿using PotionCraft.ManagersSystem;
+﻿using HarmonyLib;
+using PotionCraft.ManagersSystem;
+using PotionCraft.ManagersSystem.Potion.Entities;
 using PotionCraft.ObjectBased.Stack;
+using PotionCraft.ScriptableObjects;
 using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +18,15 @@ namespace PotionCraftPourBackIn.Scripts.Services
     {
         public static bool PotionHasSerializedData(Potion potion)
         {
-            return potion.potionFromPanel.serializedPath.indicatorTargetPosition != Vector2.zero || (potion.potionFromPanel?.serializedPath?.fixedPathPoints?.Any() ?? false);
+            var serializedPath = ((SerializedPotionRecipeData)potion.GetSerializedRecipeData()).serializedPath;
+            return serializedPath.indicatorTargetPosition != Vector2.zero 
+                   || (serializedPath?.fixedPathPoints?.Any() ?? false);
         }
 
         public static bool IsPotionStackItemEffect(StackVisualEffects instance)
         {
-            return instance?.stackScript?.inventoryItem is Potion;
+            if (instance?.stackScript == null) return false;
+            return Traverse.Create(instance.stackScript).Property<InventoryItem>("InventoryItem").Value is Potion;
         }
 
 
@@ -28,38 +34,40 @@ namespace PotionCraftPourBackIn.Scripts.Services
         /// This method copies important information to the potion that is normally lost unless the potion is saved as a recipe
         /// This is important so we can use the potion just like a recipe later
         /// </summary>
-        public static void CopyImportantInfoToPotionInstance(Potion copyTo, Potion copyFromPotion, SerializedPotionFromPanel copyFrom)
+        public static void CopyImportantInfoToPotionInstance(Potion copyTo, Potion copyFromPotion, SerializedPotionRecipeData copyFrom)
         {
-            var recipeMarks = copyTo.potionFromPanel.recipeMarks;
+            var copyToPotionFromPanel = (SerializedPotionRecipeData)copyTo.GetSerializedRecipeData();
+            var recipeMarks = copyToPotionFromPanel.recipeMarks;
             recipeMarks.Clear();
             copyFrom.recipeMarks.ForEach(m => recipeMarks.Add(m.Clone()));
-            copyTo.potionFromPanel.collectedPotionEffects.Clear();
+            copyToPotionFromPanel.collectedPotionEffects.Clear();
             foreach (var collectedPotionEffect in copyFromPotion?.Effects ?? Managers.Potion.collectedPotionEffects)
             {
                 if (collectedPotionEffect == null)
                     break;
-                copyTo.potionFromPanel.collectedPotionEffects.Add(collectedPotionEffect.name);
+                copyToPotionFromPanel.collectedPotionEffects.Add(collectedPotionEffect.name);
             }
-            copyTo.potionFromPanel.serializedPath = copyFrom.serializedPath;
-            if (!copyTo.usedComponents?.Any() ?? false)
+            copyToPotionFromPanel.serializedPath = copyFrom.serializedPath;
+            if (!copyTo.usedComponents?.GetSummaryComponents()?.Any() ?? false)
             {
-                if (copyTo.usedComponents == null) copyTo.usedComponents = new List<PotionUsedComponent>();
-                copyTo.usedComponents = Managers.Potion.usedComponents.Select(component => component.Clone()).ToList();
+                copyTo.usedComponents.Clear();
+                var mapComponents = Managers.Potion.PotionUsedComponents.GetSummaryComponents().Select(component => component.Clone()).ToList();
+                mapComponents.ForEach(c => copyTo.usedComponents.Add(c));
             }
-            if (!copyFrom.potionUsedComponents.Any())
+            if (!copyFrom.usedComponents.components.Any())
             {
-                copyTo.usedComponents.ForEach((component) =>
+                copyTo.usedComponents.GetSummaryComponents().ForEach((component) =>
                 {
-                    copyFrom.potionUsedComponents.Add(new SerializedUsedComponent
+                    copyFrom.usedComponents.components.Add(new SerializedAlchemySubstanceComponent
                     {
-                        componentName = component.componentObject.name,
-                        componentAmount = component.amount,
-                        componentType = component.componentType.ToString()
+                        name = component.Component.name,
+                        amount = component.Amount,
+                        type = component.Type.ToString()
                     });
                 });
             }
-            copyTo.potionFromPanel.potionUsedComponents = copyFrom.potionUsedComponents;
-            copyTo.potionFromPanel.potionSkinSettings = copyFrom.potionSkinSettings;
+            copyToPotionFromPanel.usedComponents = copyFrom.usedComponents;
+            copyToPotionFromPanel.skinSettings = copyFrom.skinSettings;
         }
     }
 }

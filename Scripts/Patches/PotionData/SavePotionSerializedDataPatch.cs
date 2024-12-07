@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PotionCraft.InventorySystem;
 using PotionCraft.SaveLoadSystem;
 using PotionCraft.ScriptableObjects.Potion;
 using UnityEngine;
@@ -15,8 +16,8 @@ namespace PotionCraftPourBackIn.Scripts.Patches
 
         private static void SavePotionSerializedData(SerializedInventorySlot result, Potion instance)
         {
-            if (result.data.Contains("potionFromPanel")) return;
-            var dataToInsert = $",\"potionFromPanel\":{JsonUtility.ToJson(instance.potionFromPanel)}";
+            if (result.data.Contains("recipeData")) return;
+            var dataToInsert = $",\"recipeData\":{JsonUtility.ToJson(instance.GetSerializedRecipeData())}";
             var insertIndex = result.data.LastIndexOf('}');
             result.data = result.data.Insert(insertIndex, dataToInsert);
         }

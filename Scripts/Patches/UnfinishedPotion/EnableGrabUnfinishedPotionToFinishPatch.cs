@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using PotionCraft.ManagersSystem;
+using PotionCraft.ObjectBased.Potion;
 using PotionCraft.ObjectBased.UIElements.Books.RecipeBook;
 using PotionCraft.ObjectBased.UIElements.PotionCraftPanel;
 using PotionCraft.ScriptableObjects;
@@ -24,7 +25,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             }
         }
 
-        [HarmonyPatch(typeof(RecipeBookPotionInventoryObject), "CanBeInteractedNow")]
+        [HarmonyPatch(typeof(RecipeBookInventoryObjectPotion), "CanBeInteractedNow")]
         public class RecipeBookPotionInventoryObject_CanBeInteractedNow
         {
             static bool Prefix(InventoryItem ___inventoryItem)
@@ -42,7 +43,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             if (inventoryItem is not Potion potion) return true;
             if (requireBrewStart && !Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return true;
             if (potion.Effects.Any()) return true;
-            potion.Effects = new[] { PotionEffect.allPotionEffects.First() };
+            potion.Effects = [PotionEffect.allPotionEffects.First()];
             StaticStorage.DummyEffectAddedToEnableFinishPotionGrab = true;
             return true;
         }
@@ -52,7 +53,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             if (inventoryItem is not Potion potion) return;
             if (requireBrewStart && !Managers.Potion.potionCraftPanel.IsPotionBrewingStarted()) return;
             if (!StaticStorage.DummyEffectAddedToEnableFinishPotionGrab) return;
-            potion.Effects = new PotionEffect[0];
+            potion.Effects = [];
             StaticStorage.DummyEffectAddedToEnableFinishPotionGrab = false;
         }
     }

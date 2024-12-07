@@ -12,9 +12,9 @@ namespace PotionCraftPourBackIn.Scripts.Services
     /// </summary>
     public static class RecipeService
     {
-        public static ISerializedRecipeData GetRecipeForPotion(Potion potion)
+        public static SerializedPotionRecipeData GetRecipeForPotion(Potion potion)
         {
-            return RecipeBook.Instance.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe))?.GetSerializedRecipeData();
+            return RecipeBook.Instance.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe))?.GetSerializedRecipeData() as SerializedPotionRecipeData;
         }
 
         private static bool RecipeMatchesPotion(Potion potion, IRecipeBookPageContent recipe)

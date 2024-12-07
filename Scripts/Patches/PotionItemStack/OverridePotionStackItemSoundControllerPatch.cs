@@ -11,6 +11,7 @@ using UnityEngine;
 using SoundController = PotionCraft.ObjectBased.Stack.StackItem.SoundController;
 using HarmonyLib;
 using PotionCraftPourBackIn.Scripts.UIElements;
+using PotionCraft.ScriptableObjects;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
@@ -42,7 +43,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             typeof(SoundController).GetField("stackItem", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, stackItem);
             typeof(SoundController).GetField("newCollisions", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, new List<Vector2>());
             typeof(SoundController).GetField("collidedWith", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, new List<GameObject>());
-            var firstInvIngredient = Managers.Player.inventory.items.Keys.ToList().OfType<Ingredient>().FirstOrDefault();
+            var firstInvIngredient = Managers.Player.Inventory.items.Keys.ToList().OfType<Ingredient>().FirstOrDefault();
             if (firstInvIngredient == null)
             {
                 firstInvIngredient = Ingredient.allIngredients.FirstOrDefault();
@@ -54,7 +55,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             }
             //Get the sound preset from the first ingredient we can find so we can use it as a starting point for our PotionStackItem sound controller
             var preset = UnityEngine.Object.Instantiate(firstInvIngredient.soundPreset);
-            var potionSoundPreset = ((Potion)potionItem.inventoryItem).soundPreset;
+            var potionSoundPreset = ((Potion)Traverse.Create(potionItem).Property<InventoryItem>("InventoryItem").Value).soundPreset;
             preset.hit = potionSoundPreset.hit;
             typeof(SoundController).GetField("preset", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, preset);
             typeof(SoundController).GetField("rubLoopEmitter", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, new LoopEmitter(preset.rubLoop));

@@ -18,7 +18,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         /// </summary>
         private static void CopyImportantInfoToPotionInstance(Potion copyTo, Potion copyFrom)
         {
-            PotionDataService.CopyImportantInfoToPotionInstance(copyTo, copyFrom, copyFrom.potionFromPanel);
+            PotionDataService.CopyImportantInfoToPotionInstance(copyTo, copyFrom, (SerializedPotionRecipeData)copyFrom.GetSerializedRecipeData());
         }
     }
 }

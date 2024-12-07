@@ -37,7 +37,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         {
             var potionStackItem = instance.itemsFromThisStack.FirstOrDefault() as PotionStackItem ?? instance.vacuumedItemsFromThisStack.FirstOrDefault() as PotionStackItem;
             if (potionStackItem == null) return true;
-            var potion = (Potion)potionStackItem.potionItem.inventoryItem;
+            var potion = (Potion)Traverse.Create(potionStackItem.potionItem).Property<InventoryItem>("InventoryItem").Value;
             ContinueBrewingFromPotion(potion);
             return false;
         }
@@ -47,16 +47,14 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             var matchingRecipe = RecipeService.GetRecipeForPotion(potion);
             var potionFromPanel = !PotionDataService.PotionHasSerializedData(potion)
                                     ? matchingRecipe
-                                    : potion.potionFromPanel;
+                                    : (SerializedPotionRecipeData)potion.GetSerializedRecipeData();
             if (potionFromPanel == null)
             {
                 Plugin.PluginLogger.LogInfo("ERROR: Failed to find recipe for poured-in, pre-mod potion!");
                 return;
             }
-            var potionBase = potionFromPanel.potionUsedComponents.Count == 0
-                                ? Managers.RecipeMap.currentMap.potionBase
-                                : PotionBase.GetByName(potionFromPanel.potionUsedComponents[0].componentName);
-            potionFromPanel.ApplyPotionToCurrentPotion(potionBase);
+            var potionBase = potionFromPanel.usedComponents.GetPotionBase();
+            Managers.Potion.ApplySerializedPotionRecipeDataToCurrentPotion(potionFromPanel, potionBase, true);
             StaticStorage.PouredInUsedComponents = potion.usedComponents.GetSummaryComponents().ToList();
             StaticStorage.PouredInEffects = potion.Effects.ToList();
             if (matchingRecipe != null)
@@ -68,7 +66,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             {
                 if (collectedPotionEffect == null) continue;
 
-                foreach (var potionEffectsOn in Managers.RecipeMap.currentMap.potionEffectsOnMap)
+                foreach (var potionEffectsOn in Managers.RecipeMap.currentMap.referencesContainer.potionEffectsOnMap)
                 {
                     if (potionEffectsOn.Effect == collectedPotionEffect)
                     {

@@ -19,6 +19,7 @@ using PotionCraft.NotificationSystem;
 using PotionCraftPourBackIn.Scripts.Storage;
 using PotionCraft.ManagersSystem.Room;
 using PotionCraft.ObjectBased.InteractiveItem;
+using PotionCraftPourBackIn.Scripts.Extensions;
 
 namespace PotionCraftPourBackIn.Scripts.Services
 {
@@ -30,7 +31,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
     {
         public static void SetupPotionItemForPouringIn(PotionItem potionItem)
         {
-            var potion = potionItem.inventoryItem as Potion;
+            var potion = potionItem.GetInventoryItem() as Potion;
             if (!PotionDataService.PotionHasSerializedData(potion)
                 && RecipeService.GetRecipeForPotion(potion) == null)
             {
@@ -45,12 +46,12 @@ namespace PotionCraftPourBackIn.Scripts.Services
             stackItem.transform.parent = potionItem.transform;
             stackScript.itemsFromThisStack = new List<StackItem> { stackItem };
             var potionSoundController = (PotionCraft.ObjectBased.Stack.SoundController)FormatterServices.GetUninitializedObject(typeof(PotionCraft.ObjectBased.Stack.SoundController));
-            InitPotionStackSoundController(potionSoundController, stackScript, ((Potion)potionItem.inventoryItem).soundPreset);
+            InitPotionStackSoundController(potionSoundController, stackScript, ((Potion)potionItem.GetInventoryItem()).soundPreset);
             typeof(ItemFromInventory).GetField("_soundController", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(stackScript, potionSoundController);
             stackItem.Initialize(stackScript);
             visualEffect.stackScript = stackScript;
-            stackScript.inventoryItem = potionItem.inventoryItem;
-            stackItem.spriteRenderers = new SpriteRenderer[0];
+            stackScript.SetInventoryItem(potionItem.GetInventoryItem());
+            stackItem.spriteRenderers = [];
             stackItem.graphicStateMachine = potionItem.gameObject.AddComponent<GraphicStateMachine>();
             stackItem.graphicStateMachine.Init(stackItem);
             return;
@@ -58,7 +59,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
 
         private static void InitPotionStackSoundController(PotionCraft.ObjectBased.Stack.SoundController instance, ItemFromInventory itemFromInventory, ItemFromInventoryPreset preset)
         {
-            var firstInvIngredient = Managers.Player.inventory.items.Keys.ToList().OfType<Ingredient>().FirstOrDefault();
+            var firstInvIngredient = Managers.Player.Inventory.items.Keys.ToList().OfType<Ingredient>().FirstOrDefault();
             if (firstInvIngredient == null)
             {
                 firstInvIngredient = Ingredient.allIngredients.FirstOrDefault();
@@ -93,7 +94,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
             const float timeBetweenNotifications = 5f;
             //Only show this notification when the potion is grabbed in the laboratory
             if (Managers.Room.currentRoom != RoomManager.RoomIndex.Laboratory && Managers.Room.targetRoom != RoomManager.RoomIndex.Laboratory) return;
-            var potion = (Potion)instance.inventoryItem;
+            var potion = (Potion)instance.GetInventoryItem();
             if (!PotionDataService.PotionHasSerializedData(potion)
                 && RecipeService.GetRecipeForPotion(potion) == null
                 && potion != StaticStorage.CurrentPotionCraftPanelPotion)

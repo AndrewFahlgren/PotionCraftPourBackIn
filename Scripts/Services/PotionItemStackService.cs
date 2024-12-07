@@ -20,6 +20,7 @@ using PotionCraftPourBackIn.Scripts.Storage;
 using PotionCraft.ManagersSystem.Room;
 using PotionCraft.ObjectBased.InteractiveItem;
 using PotionCraftPourBackIn.Scripts.Extensions;
+using HarmonyLib;
 
 namespace PotionCraftPourBackIn.Scripts.Services
 {
@@ -93,7 +94,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
         {
             const float timeBetweenNotifications = 5f;
             //Only show this notification when the potion is grabbed in the laboratory
-            if (Managers.Room.currentRoom != RoomManager.RoomIndex.Laboratory && Managers.Room.targetRoom != RoomManager.RoomIndex.Laboratory) return;
+            if (Managers.Room.CurrentRoomIndex != RoomIndex.Laboratory && Traverse.Create(Managers.Room).Field<RoomIndex>("targetRoom").Value != RoomIndex.Laboratory) return;
             var potion = (Potion)instance.GetInventoryItem();
             if (!PotionDataService.PotionHasSerializedData(potion)
                 && RecipeService.GetRecipeForPotion(potion) == null

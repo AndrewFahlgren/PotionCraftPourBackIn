@@ -6,6 +6,7 @@ using PotionCraft.ObjectBased.UIElements.PotionCraftPanel;
 using PotionCraft.ScriptableObjects;
 using PotionCraft.ScriptableObjects.Potion;
 using PotionCraftPourBackIn.Scripts.Storage;
+using PotionCraftPourBackIn.Scripts.Extensions;
 using System.Linq;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
@@ -15,26 +16,26 @@ namespace PotionCraftPourBackIn.Scripts.Patches
         [HarmonyPatch(typeof(PotionInventoryObject), "CanBeInteractedNow")]
         public class EnableGrabUnfinishedPotionToFinishPatch
         {
-            static bool Prefix(InventoryItem ___inventoryItem)
+            static bool Prefix(PotionInventoryObject __instance)
             {
-                return Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPrefix(___inventoryItem));
+                return Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPrefix(__instance.GetInventoryItem()));
             }
-            static void Postfix(InventoryItem ___inventoryItem)
+            static void Postfix(PotionInventoryObject __instance)
             {
-                Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPostfix(___inventoryItem));
+                Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPostfix(__instance.GetInventoryItem()));
             }
         }
 
         [HarmonyPatch(typeof(RecipeBookInventoryObjectPotion), "CanBeInteractedNow")]
         public class RecipeBookPotionInventoryObject_CanBeInteractedNow
         {
-            static bool Prefix(InventoryItem ___inventoryItem)
+            static bool Prefix(RecipeBookInventoryObjectPotion __instance)
             {
-                return Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPrefix(___inventoryItem, false));
+                return Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPrefix(__instance.GetInventoryItem(), false));
             }
-            static void Postfix(InventoryItem ___inventoryItem)
+            static void Postfix(RecipeBookInventoryObjectPotion __instance)
             {
-                Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPostfix(___inventoryItem, false));
+                Ex.RunSafe(() => EnableGrabUnfinishedPotionToFinishPostfix(__instance.GetInventoryItem(), false));
             }
         }
 

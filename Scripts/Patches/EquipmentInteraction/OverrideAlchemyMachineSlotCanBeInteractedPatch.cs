@@ -1,13 +1,13 @@
 ﻿using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.Potion;
 using HarmonyLib;
-using PotionCraft.ObjectBased.AlchemyMachine;
 using PotionCraft.ScriptableObjects.Potion;
 using PotionCraft.ScriptableObjects;
+using PotionCraft.ObjectBased.AlchemyMachine;
 
 namespace PotionCraftPourBackIn.Scripts.Patches
 {
-    [HarmonyPatch(typeof(AlchemyMachineSlot), "CanBeInteractedNow")]
+    [HarmonyPatch(typeof(AlchemyMachineSlotObject), "CanBeInteractedNow")]
     public class OverrideAlchemyMachineSlotCanBeInteractedPatch
     {
         static void Postfix(ref bool __result)

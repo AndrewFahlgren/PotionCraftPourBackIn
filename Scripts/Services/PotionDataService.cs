@@ -2,6 +2,7 @@
 using PotionCraft.ManagersSystem;
 using PotionCraft.ManagersSystem.Potion.Entities;
 using PotionCraft.ObjectBased.Stack;
+using PotionCraft.ObjectBased.UIElements.Books.RecipeBook;
 using PotionCraft.ScriptableObjects;
 using PotionCraft.ScriptableObjects.Potion;
 using System.Collections.Generic;
@@ -34,8 +35,9 @@ namespace PotionCraftPourBackIn.Scripts.Services
         /// This method copies important information to the potion that is normally lost unless the potion is saved as a recipe
         /// This is important so we can use the potion just like a recipe later
         /// </summary>
-        public static void CopyImportantInfoToPotionInstance(Potion copyTo, Potion copyFromPotion, SerializedPotionRecipeData copyFrom)
+        public static void CopyImportantInfoToPotionInstance(IRecipeBookPageContent copyToPg, Potion copyFromPotion, SerializedPotionRecipeData copyFrom)
         {
+            if (copyToPg is not Potion copyTo) return;
             var copyToPotionFromPanel = (SerializedPotionRecipeData)copyTo.GetSerializedRecipeData();
             var recipeMarks = copyToPotionFromPanel.recipeMarks;
             recipeMarks.Clear();

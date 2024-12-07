@@ -17,16 +17,17 @@ namespace PotionCraftPourBackIn.Scripts.Patches
     {
         static MethodInfo TargetMethod()
         {
-            return typeof(ExperienceSubManager).GetMethod("AddExperience", [typeof(Potion), typeof(int)]);
+            return typeof(Potion).GetMethod("AddBrewingExperience", [typeof(int), typeof(bool)]);
         }
 
-        static bool Prefix(Potion potion, int count)
+        static bool Prefix(Potion __instance, int count, bool isBrewingFromRecipeBook)
         {
-            return Ex.RunSafe(() => AddModifiedExperienceForPouredBackInPotions(potion, count));
+            return Ex.RunSafe(() => AddModifiedExperienceForPouredBackInPotions(__instance, count, isBrewingFromRecipeBook));
         }
 
-        private static bool AddModifiedExperienceForPouredBackInPotions(Potion potion, int count)
+        private static bool AddModifiedExperienceForPouredBackInPotions(Potion potion, int count, bool isBrewingFromRecipeBook)
         {
+            if (isBrewingFromRecipeBook) return true;
             if (StaticStorage.PouredInUsedComponents == null) return true;
 
             var asset = PotionCraft.Settings.Settings<PlayerManagerSettings>.Asset;
@@ -52,7 +53,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             var num = newEffects.Any()
                         ? Potion.GetPotionReview([], [.. newEffects]).cost * asset.experiencePotionEffectsMultiplier
                         : 0f;
-            Managers.Player.AddExperience((ingredientsExperience + num) * count);
+            Managers.Player.experience.AddExperience((ingredientsExperience + num) * count, ExperienceCategory.CraftPotions);
 
             StaticStorage.PouredInUsedComponents = null;
             StaticStorage.PouredInEffects = null;

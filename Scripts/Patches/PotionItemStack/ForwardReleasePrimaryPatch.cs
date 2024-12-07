@@ -25,7 +25,7 @@ namespace PotionCraftPourBackIn.Scripts.Patches
             if (stack == null) return;
             //Ensure we are not forwarding events when interacting with scales or alchemy machine
             if (Managers.Cursor.hoveredInteractiveItem is ScalesCupDisplay || Managers.Cursor.hoveredInteractiveItem is AlchemyMachineSlot) return;
-            stack.OnReleasePrimary();
+            stack.OnReleasePrimary(false);
         }
     }
 }

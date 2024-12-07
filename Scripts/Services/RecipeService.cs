@@ -14,18 +14,18 @@ namespace PotionCraftPourBackIn.Scripts.Services
     {
         public static SerializedPotionRecipeData GetRecipeForPotion(Potion potion)
         {
-            return RecipeBook.Instance.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe))?.GetSerializedRecipeData() as SerializedPotionRecipeData;
+            return RecipeBook.Instance.savedRecipes.FirstOrDefault(recipe => RecipeMatchesPotion(potion, recipe as Potion))?.GetSerializedRecipeData() as SerializedPotionRecipeData;
         }
 
-        private static bool RecipeMatchesPotion(Potion potion, IRecipeBookPageContent recipe)
+        private static bool RecipeMatchesPotion(Potion potion, Potion recipe)
         {
             if (recipe == null) return false;
-            if (!recipe.GetLocalizedTitle().Equals(potion.GetLocalizedTitle())) return false;
+            if (!recipe.GetLocalizedTitleText().Equals(potion.GetLocalizedTitleText())) return false;
             if (recipe.Effects.Count() != potion.Effects.Count()) return false;
             if (!SequencesMatch(recipe.Effects.Select(e => e.name).ToList(), potion.Effects.Select(e => e.name).ToList())) return false;
-            if (recipe.usedComponents.Count() != potion.usedComponents.Count()) return false;
-            var recipeUsedComps = recipe.usedComponents.Select(e => new { e.componentObject.name, e.amount }).ToList();
-            var potionUsedComps = potion.usedComponents.Select(e => new { e.componentObject.name, e.amount }).ToList();
+            if (recipe.usedComponents.GetSummaryComponentsCount() != potion.usedComponents.GetSummaryComponentsCount()) return false;
+            var recipeUsedComps = recipe.usedComponents.GetSummaryComponents().Select(e => new { e.Component.name, e.Amount }).ToList();
+            var potionUsedComps = potion.usedComponents.GetSummaryComponents().Select(e => new { e.Component.name, e.Amount }).ToList();
             if (!SequencesMatch(recipeUsedComps, potionUsedComps)) return false;
             return true;
         }

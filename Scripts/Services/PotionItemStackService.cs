@@ -52,7 +52,7 @@ namespace PotionCraftPourBackIn.Scripts.Services
             stackItem.Initialize(stackScript);
             visualEffect.stackScript = stackScript;
             stackScript.SetInventoryItem(potionItem.GetInventoryItem());
-            stackItem.spriteRenderers = [];
+            stackItem.spriteRenderers = [potionItem.visualObject.bottleLiquidMainSpriteRenderer];
             stackItem.graphicStateMachine = potionItem.gameObject.AddComponent<GraphicStateMachine>();
             stackItem.graphicStateMachine.Init(stackItem);
             return;
